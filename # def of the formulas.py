@@ -12,6 +12,15 @@ def division(a, b):
         raise ValueError("Erreur : Division par zéro impossible")
     return a / b
 
+def addition(a, b):
+    return a + b
+
+def soustraction(a, b):
+    return a - b
+
+def multiplication(a, b):
+    return a * b
+
 def calculatrice():
     print("Bienvenue dans la calculatrice.")
     print("Opérations disponibles :")
@@ -51,4 +60,6 @@ def calculatrice():
         except Exception as e:
             print(f"Une erreur inattendue s'est produite : {e}")
 
-        
+# Lancer la calculatrice
+calculatrice()
+
