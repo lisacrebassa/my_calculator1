@@ -1,3 +1,6 @@
+import json
+
+# Fonctions mathématiques
 def addition(a, b):
     return a + b
 
@@ -12,15 +15,46 @@ def division(a, b):
         raise ValueError("Erreur : Division par zéro impossible")
     return a / b
 
-def addition(a, b):
-    return a + b
+# Fonction pour enregistrer un calcul dans l'historique
+def enregistrer_historique(operation, a, b, result):
+    historique = []
+    fichier = "historique.json"
+    
+    # Charger l'historique existant
+    try:
+        with open(fichier, "r") as f:
+            historique = json.load(f)
+    except FileNotFoundError:
+        pass  # Le fichier n'existe pas encore, aucun problème
 
-def soustraction(a, b):
-    return a - b
+    # Ajouter le nouveau calcul
+    historique.append({
+        "operation": operation,
+        "a": a,
+        "b": b,
+        "result": result
+    })
 
-def multiplication(a, b):
-    return a * b
+    # Enregistrer dans le fichier
+    with open(fichier, "w") as f:
+        json.dump(historique, f, indent=4)
 
+# Fonction pour afficher l'historique
+def afficher_historique():
+    fichier = "historique.json"
+    try:
+        with open(fichier, "r") as f:
+            historique = json.load(f)
+            if not historique:
+                print("Aucun calcul dans l'historique.")
+                return
+            print("\nHistorique des calculs :")
+            for calcul in historique:
+                print(f"{calcul['a']} {calcul['operation']} {calcul['b']} = {calcul['result']}")
+    except FileNotFoundError:
+        print("Aucun historique trouvé.")
+
+# Fonction principale
 def calculatrice():
     print("Bienvenue dans la calculatrice.")
     print("Opérations disponibles :")
@@ -28,15 +62,19 @@ def calculatrice():
     print("2. Soustraction (-)")
     print("3. Multiplication (x)")
     print("4. Division (/)")
+    print("5. Afficher l'historique")
     
     while True:
         try:
-            operation = input("\nChoisissez l'opération (+, -, *, /) ou tapez 'q' pour quitter : ")
+            operation = input("\nChoisissez l'opération (+, -, *, /, h pour historique) ou tapez 'q' pour quitter : ")
             if operation == 'q':
                 print("Au revoir!")
                 break
+            if operation == 'h':
+                afficher_historique()
+                continue
             if operation not in ['+', '-', '*', '/']:
-                print("Opération invalide. Veuillez choisir parmi +, -, *, /.")
+                print("Opération invalide. Veuillez choisir parmi +, -, *, / ou h.")
                 continue
             
             # Saisie des nombres
@@ -54,6 +92,7 @@ def calculatrice():
                 result = division(a, b)
             
             print(f"Le résultat de {a} {operation} {b} = {result}")
+            enregistrer_historique(operation, a, b, result)
         
         except ValueError as e:
             print(f"Erreur : {e}")
@@ -62,4 +101,3 @@ def calculatrice():
 
 # Lancer la calculatrice
 calculatrice()
-
